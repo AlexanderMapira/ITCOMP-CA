@@ -8,15 +8,7 @@ import React, {
   useState,
 } from "react";
 import { AnimatePresence, motion, useMotionValue } from "framer-motion";
-
-/**
- * ImageTrailHero (clean, trail OFF by default)
- * - Background: 4 HUGE uppercase lines, alternating directions (LTR/RTL), seamless loop.
- * - Foreground: headline (frontWords) + two-line subtext (frontSubtext).
- * - Downward arrow on bottom-right.
- * - Image trail can be toggled via `showTrail` prop (default false).
- * - Gotham Bold via CSS var: --hero-font (set in globals.css).
- */
+import styles from "./Marquee.module.css";
 
 export type ImageTrailHeroProps = {
   // Foreground content
@@ -43,8 +35,6 @@ export type ImageTrailHeroProps = {
   // Layout
   className?: string;
   bg?: string;
-  // Use CSS classes for font family instead of inline styles to avoid hydration issues
-  fontFamily?: string;
 };
 
 const DEFAULT_IMAGES = [
@@ -77,7 +67,7 @@ export default function ImageTrailHero({
   // styling
   frontWordSize,
   frontWordClassName,
-
+  frontContainerClassName,
   stackFrontWords = false,
 
   // background
@@ -94,14 +84,16 @@ export default function ImageTrailHero({
   // layout
   bg = "bg-gray-900",
   className = "",
-  fontFamily,
 }: ImageTrailHeroProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [hasTouch, setHasTouch] = useState(false);
-  useEffect(
-    () => setHasTouch(window.matchMedia("(pointer: coarse)").matches),
-    []
-  );
+
+  // SSR-safe pointer detection
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      setHasTouch(window.matchMedia("(pointer: coarse)").matches);
+    }
+  }, []);
 
   // cursor / trail state (only used if showTrail)
   const mx = useMotionValue(0);
@@ -119,14 +111,6 @@ export default function ImageTrailHero({
   const idRef = useRef(0);
   const lastSpawnRef = useRef(0);
   const imgIndexRef = useRef(0);
-
-  const family =
-    fontFamily ||
-    (typeof window !== "undefined"
-      ? getComputedStyle(document.documentElement)
-          .getPropertyValue("--hero-font")
-          ?.trim() || "Gotham Bold, 'Helvetica Neue', Arial, sans-serif"
-      : "Gotham Bold, 'Helvetica Neue', Arial, sans-serif");
 
   const spawnPop = useCallback(
     (x: number, y: number) => {
@@ -165,30 +149,31 @@ export default function ImageTrailHero({
   // clean up trail pops only if trail is active
   useEffect(() => {
     if (!showTrail) return;
-    const t = setInterval(
-      () => {
-        const now = performance.now();
-        setPops((prev) => prev.filter((p) => now - p.born < popLifetimeMs));
-      },
-      Math.min(120, popLifetimeMs / 4)
-    );
+    const t = setInterval(() => {
+      const now = performance.now();
+      setPops((prev) => prev.filter((p) => now - p.born < popLifetimeMs));
+    }, Math.min(120, popLifetimeMs / 4));
     return () => clearInterval(t);
   }, [popLifetimeMs, showTrail]);
 
-  // Build 4 marquee lines (alternating directions). Slightly slowed for calmness.
+  // ⬇️ Build marquee lines: SLOWER + PUSHED UP
   const lines = useMemo(() => {
     const base = (
       sentences.length >= 4
         ? sentences.slice(0, 4)
         : [...sentences, ...DEFAULT_SENTENCES].slice(0, 4)
     ).map((s) => s.toUpperCase());
+
     return base.map((text, i) => ({
       text,
       dir: i % 2 === 0 ? "ltr" : "rtl",
       fontSize:
         i % 2 === 0 ? "clamp(28px, 8vw, 120px)" : "clamp(26px, 7.5vw, 112px)",
       opacity: 0.16 + i * 0.02,
-      speed: 48 + i * 5, // higher number = slower marquee
+      // Higher duration value => slower movement (was 48 + i*5)
+      speed: 80 + i * 12,
+      // Shift lines upward slightly (used in inline style below)
+      topFactor: i + 0.7, // was (i + 1)
     }));
   }, [sentences]);
 
@@ -196,17 +181,8 @@ export default function ImageTrailHero({
     <section
       ref={containerRef}
       onMouseMove={showTrail && !hasTouch ? handleMove : undefined}
-      className={`relative isolate overflow-hidden min-h-[80vh] w-full flex items-center ${bg} ${className} ${family ? 'font-sans' : ''}`}
-      style={family ? { fontFamily: family } : undefined}
+      className={`relative isolate overflow-hidden min-h-[80vh] w-full flex items-center ${bg} ${className} font-sans`}
     >
-      <style>{`
-        .marquee { white-space: nowrap; will-change: transform; display: inline-block; }
-        .marquee > .chunk { padding-right: 3rem; }
-        @keyframes marquee-ltr { 0% { transform: translateX(-100%); } 100% { transform: translateX(0%); } }
-        @keyframes marquee-rtl { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
-        @keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
-      `}</style>
-
       {/* Background marquee lines (seamless, alternating directions) */}
       <div className="pointer-events-none absolute inset-0 select-none [mask-image:radial-gradient(60%_60%_at_50%_50%,black,transparent)] overflow-hidden">
         {lines.map((ln, i) => (
@@ -214,7 +190,8 @@ export default function ImageTrailHero({
             key={i}
             aria-hidden
             style={{
-              top: `${(i + 1) * (100 / (4 + 1))}%`,
+              // push lines upward a bit by using 0.7 instead of 1.0 step
+              top: `${ln.topFactor * (100 / (4 + 1))}%`,
               fontSize: ln.fontSize,
               opacity: ln.opacity,
               letterSpacing: "0.08em",
@@ -222,27 +199,29 @@ export default function ImageTrailHero({
             className="absolute left-0 right-0 -translate-y-1/2 font-extrabold tracking-widest"
           >
             <div
-              className="marquee text-gray-200"
+              className={`${styles.marquee} text-gray-200`}
               style={{
-                animation: `${ln.dir === "ltr" ? "marquee-ltr" : "marquee-rtl"} ${ln.speed}s linear infinite`,
+                animation: `${
+                  ln.dir === "ltr" ? styles.marqueeLtr : styles.marqueeRtl
+                } ${ln.speed}s linear infinite`,
               }}
             >
               {/* repeat to remove gaps */}
-              <span className="chunk">{ln.text}</span>
-              <span className="chunk">{ln.text}</span>
-              <span className="chunk">{ln.text}</span>
-              <span className="chunk">{ln.text}</span>
-              <span className="chunk">{ln.text}</span>
-              <span className="chunk">{ln.text}</span>
-              <span className="chunk">{ln.text}</span>
-              <span className="chunk">{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
+              <span className={styles.chunk}>{ln.text}</span>
             </div>
           </div>
         ))}
       </div>
 
       {/* Foreground: headline + subtext */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 sm:px-8 md:py-32 lg:py-36 ">
+      <div className={`relative z-10 mx-auto w-full max-w-7xl px-6 py-24 sm:px-8 md:py-32 lg:py-36 ${frontContainerClassName ?? ""}`}>
         <div className="max-w-5xl relative left-4 translate-y-2 sm:translate-y-10 [transform:translateZ(0)]">
           <h1
             className={`text-white uppercase font-extrabold leading-[0.95] drop-shadow-2xl ${frontWordClassName ?? ""}`}
@@ -320,14 +299,9 @@ export default function ImageTrailHero({
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ animation: "nudge 1.8s ease-in-out infinite" }}
+          style={{ animation: `${styles.nudge} 1.8s ease-in-out infinite` }}
         >
-          <path
-            d="M12 4v13"
-            stroke="white"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-          />
+          <path d="M12 4v13" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
           <path
             d="M7 12l5 5 5-5"
             stroke="white"

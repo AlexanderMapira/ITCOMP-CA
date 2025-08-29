@@ -1,0 +1,49 @@
+.marquee {
+  white-space: nowrap;
+  will-change: transform;
+  display: inline-block;
+}
+
+.chunk {
+  padding-right: 3rem;
+}
+
+.marqueeLtr {
+  animation: marqueeLtr 20s linear infinite;
+}
+
+.marqueeRtl {
+  animation: marqueeRtl 20s linear infinite;
+}
+
+.nudge {
+  animation: nudge 1.8s ease-in-out infinite;
+}
+
+@keyframes marqueeLtr {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes marqueeRtl {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}

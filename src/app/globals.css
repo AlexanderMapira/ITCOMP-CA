@@ -1,48 +1,134 @@
-@import "tailwindcss";
+/* --------------------------------
+   Tailwind v4 core imports
+---------------------------------- */
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
 
-/* -------------------------------
-   Custom Font: Gotham Bold
---------------------------------- */
-@font-face {
-  font-family: "Gotham Bold";
-  src: url("/fonts/Gotham-Bold.woff2") format("woff2");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* -------------------------------
-   Root variables
---------------------------------- */
+/* --------------------------------
+   Design tokens (CSS variables)
+----------------------------------*/
 :root {
-  --hero-font: "Gotham Bold", "Helvetica Neue", Arial, sans-serif;
+  /* Fonts */
+  --hero-font:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
 
+  /* Colors (light) */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Optional UI tokens */
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --card: #ffffff;
+  --card-foreground: #0b0b0b;
+  --border: #e5e7eb;
+  --primary: #1d4ed8; /* adjust to your brand */
+  --primary-foreground: #ffffff;
+  --ring: #93c5fd;
 }
 
-@theme inline {
+/* Dark mode via class="dark" on <html> */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+
+  --muted: #111827;
+  --muted-foreground: #9ca3af;
+  --card: #0b0b0b;
+  --card-foreground: #f9fafb;
+  --border: #1f2937;
+  --primary: #60a5fa;
+  --primary-foreground: #0a0a0a;
+  --ring: #2563eb;
+}
+
+/* --------------------------------
+   Map tokens to Tailwind v4 theme
+---------------------------------- */
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* If you loaded fonts via next/font/local, expose them here */
+  --font-sans: var(--font-geist-sans, var(--hero-font));
+  --font-mono: var(
+    --font-geist-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace
+  );
+
+  /* Tailwind ring color variable */
+  --ring-color: var(--ring);
 }
 
-/* Dark mode overrides */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* --------------------------------
+   Base resets & global styles
+---------------------------------- */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
-/* -------------------------------
-   Base styles
---------------------------------- */
 body {
+  min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--hero-font);
   margin: 0;
-  padding: 0;
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  font-family: inherit;
+  border-color: var(--border);
+}
+
+::selection {
+  background: var(--ring);
+  color: #0b0b0b;
+}
+
+/* --------------------------------
+   Helpful utility tweaks
+---------------------------------- */
+.font-hero-900 {
+  font-weight: 900;
+} /* use instead of overriding .font-bold */
+.font-hero-700 {
+  font-weight: 700;
+}
+
+.bg-token {
+  background-color: var(--background);
+}
+.text-token {
+  color: var(--foreground);
+}
+.border-token {
+  border-color: var(--border);
+}
+/* Tailwind reads --ring-color; this helper sets ring color variable */
+.ring-token {
+  --tw-ring-color: var(--ring);
 }
