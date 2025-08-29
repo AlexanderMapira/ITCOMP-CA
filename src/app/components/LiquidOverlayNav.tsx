@@ -33,9 +33,9 @@ export default function LiquidOverlayNav() {
   }, [open]);
 
   const links = [
-    { label: "ABOUT", href: "#learn-more" },
-    { label: "SERVICES", href: "#services" },
-    { label: "CONTACT", href: "#contact" },
+    { label: "ABOUT", href: "/about" },
+    { label: "SERVICES", href: "/services" },
+    { label: "CONTACT", href: "/contact" },
   ];
 
   // Easing
@@ -58,13 +58,7 @@ export default function LiquidOverlayNav() {
     (href: string) => {
       setOpen(false);
       setTimeout(() => {
-        if (href.startsWith("#")) {
-          document
-            .querySelector(href)
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.location.href = href;
-        }
+        window.location.href = href;
       }, prefersReducedMotion ? 0 : 320);
     },
     [prefersReducedMotion]
@@ -75,10 +69,10 @@ export default function LiquidOverlayNav() {
       {/* Top bar — increased top gap via pt-3 and taller header */}
       <header className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between h-16 px-6 pt-3">
         <Link
-          href="#home"
+          href="/"
           className="font-extrabold tracking-widest uppercase text-white"
         >
-          KHODISET
+          KHODITECH
         </Link>
         <button
           onClick={() => setOpen(true)}
