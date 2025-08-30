@@ -1,7 +1,11 @@
 "use client";
 
+import TechMarquee from "./components/TechMarquee";
 import LiquidOverlayNav from "./components/LiquidOverlayNav";
 import ImageTrailHero from "./components/ImageTrailHero";
+import { Item5Canvas } from "./components/Item5";
+import { Suspense } from "react";
+import ProjectBriefForm from "./components/ProjectBriefForm";
 
 export default function Page() {
   return (
@@ -127,26 +131,29 @@ export default function Page() {
           </div>
         </div>
       </section>
+      {/* Logos Section */}
+      <TechMarquee />
 
       {/* Services Section - Gray Background */}
       <section className="bg-gray-900 text-white py-24 lg:py-32 relative overflow-hidden">
         {/* Modern geometric background */}
         <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-px h-96 bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <div className="w-3 h-3 bg-white/20 rounded-full animate-ping"></div>
-            <div className="absolute inset-0 w-3 h-3 bg-white/10 rounded-full"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="absolute bottom-1/3 right-1/4 w-px h-96 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="w-3 h-3 bg-white/20 rounded-full animate-ping" />
+            <div className="absolute inset-0 w-3 h-3 bg-white/10 rounded-full" />
           </div>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 sm:px-8 relative">
-          <div className="text-center mb-24">
-            <div className="inline-flex items-center px-6 py-3 bg-white/5 border border-white/10 rounded-full text-sm font-medium uppercase tracking-[0.2em] text-gray-300 mb-12 backdrop-blur-sm">
-              <div className="w-2 h-2 bg-white/40 rounded-full mr-3 animate-pulse"></div>
+          {/* Heading */}
+          <div className="text-center mb-16 lg:mb-24">
+            <div className="inline-flex items-center px-6 py-3 bg-white/5 border border-white/10 rounded-full text-sm font-medium uppercase tracking-[0.2em] text-gray-300 mb-8 backdrop-blur-sm">
+              <div className="w-2 h-2 bg-white/40 rounded-full mr-3 animate-pulse" />
               Our Services
             </div>
-            <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black uppercase tracking-[-0.02em] mb-12 leading-[0.85]">
+            <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black uppercase tracking-[-0.02em] mb-8 leading-[0.85]">
               Our{" "}
               <span className="text-gray-600 font-extralight">Expertise</span>
             </h2>
@@ -156,7 +163,52 @@ export default function Page() {
             </p>
           </div>
 
+          {/* 3D Highlight Row */}
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-20">
+            {/* Copy */}
+            <div className="space-y-5">
+              <h3 className="text-3xl md:text-4xl font-black uppercase tracking-[0.08em]">
+                IT Consulting Expertise
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                We provide end-to-end IT consulting services that empower
+                organizations to modernize their systems, streamline operations,
+                and unlock digital growth. Our team blends technical depth with
+                strategic vision to deliver solutions that are reliable,
+                scalable, and future-ready.
+              </p>
+              <ul className="text-gray-400/90 text-base leading-relaxed space-y-2">
+                <li className="flex items-start gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/60" />
+                  Strategic IT roadmapping aligned with your business goals.
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/60" />
+                  Cloud adoption, migration, and optimization expertise.
+                </li>
+
+                <li className="flex items-start gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/60" />
+                  Ongoing support and maintenance to keep technology running
+                  smoothly.
+                </li>
+              </ul>
+            </div>
+
+            {/* 3D Canvas container */}
+            <div className="relative h-[420px] md:h-[520px] rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-md overflow-hidden">
+              {/* subtle inner vignette/gradient to blend with bg */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-white/[0.03]" />
+              <div className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(white,transparent_70%)]" />
+              <Suspense fallback={null}>
+                <Item5Canvas />
+              </Suspense>
+            </div>
+          </div>
+
+          {/* Your existing three service cards */}
           <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
+            {/* Card 1 */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-700"></div>
               <div className="relative text-center p-12 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all duration-700 group-hover:-translate-y-3">
@@ -183,12 +235,12 @@ export default function Page() {
                 </h3>
                 <p className="text-gray-300 leading-relaxed text-lg font-light">
                   Tailored solutions built from the ground up to meet your
-                  specific requirements and business objectives with modern
-                  architecture.
+                  specific requirements and modern architecture.
                 </p>
               </div>
             </div>
 
+            {/* Card 2 */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl transform group-hover:scale-105 transition-transform duration-700"></div>
               <div className="relative text-center p-12 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all duration-700 group-hover:-translate-y-3">
@@ -214,13 +266,13 @@ export default function Page() {
                   Performance Optimization
                 </h3>
                 <p className="text-gray-300 leading-relaxed text-lg font-light">
-                  Lightning-fast applications optimized for speed, scalability,
-                  and exceptional user experience across all platforms and
-                  devices.
+                  Lightning-fast apps optimized for speed, scalability, and
+                  exceptional UX across platforms.
                 </p>
               </div>
             </div>
 
+            {/* Card 3 */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform duration-700"></div>
               <div className="relative text-center p-12 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all duration-700 group-hover:-translate-y-3">
@@ -246,8 +298,8 @@ export default function Page() {
                   Security & Maintenance
                 </h3>
                 <p className="text-gray-300 leading-relaxed text-lg font-light">
-                  Robust security measures and comprehensive support to keep
-                  your applications running smoothly and securely at all times.
+                  Robust security and proactive support to keep your systems
+                  smooth and secure.
                 </p>
               </div>
             </div>
@@ -335,6 +387,8 @@ export default function Page() {
           </div>
         </div>
       </section>
+      {/* Project Brief Form */}
+      <ProjectBriefForm />
 
       {/* Footer - Black Background */}
       <footer className="bg-black text-white py-20 lg:py-24 relative overflow-hidden">
