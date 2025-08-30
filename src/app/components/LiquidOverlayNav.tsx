@@ -5,10 +5,109 @@ import Link from "next/link";
 import {
   AnimatePresence,
   motion,
+  useAnimation,
   useReducedMotion,
   cubicBezier,
   type Transition,
 } from "framer-motion";
+
+/* Hover-only heavy-wave float */
+function HoverFloatWord({
+  children,
+  strength = 1.2, // increase for rougher seas
+}: {
+  children: React.ReactNode;
+  strength?: number;
+}) {
+  const prefersReducedMotion = useReducedMotion();
+  const controls = useAnimation();
+  const [hovering, setHovering] = useState(false);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const dur = 3.6 + 0.4 * strength;
+
+    if (hovering) {
+      controls.start({
+        y: [0, 12 * strength, -14 * strength, 8 * strength, -10 * strength, 0],
+        x: [0, -6 * strength, 4 * strength, -5 * strength, 3 * strength, 0],
+        rotate: [
+          0,
+          -4 * strength,
+          3 * strength,
+          -3 * strength,
+          2 * strength,
+          0,
+        ],
+        skewX: [
+          0,
+          -2 * strength,
+          1.5 * strength,
+          -1 * strength,
+          1 * strength,
+          0,
+        ],
+        skewY: [
+          0,
+          1 * strength,
+          -1 * strength,
+          0.5 * strength,
+          -0.5 * strength,
+          0,
+        ],
+        transition: { duration: dur, ease: "easeInOut", repeat: Infinity },
+      });
+    } else {
+      controls.stop();
+      controls.start({
+        y: 0,
+        x: 0,
+        rotate: 0,
+        skewX: 0,
+        skewY: 0,
+        transition: { type: "spring", stiffness: 260, damping: 20 },
+      });
+    }
+  }, [hovering, strength, controls, prefersReducedMotion]);
+
+  if (prefersReducedMotion)
+    return <span className="inline-block">{children}</span>;
+
+  const durWake = 3.6 + 0.4 * strength;
+
+  return (
+    <motion.span
+      className="relative inline-block will-change-transform"
+      style={{ transformOrigin: "50% 60%" }}
+      onHoverStart={() => setHovering(true)}
+      onHoverEnd={() => setHovering(false)}
+      animate={controls}
+      initial={false}
+    >
+      <span className="relative z-10">{children}</span>
+
+      {/* soft wake under word (only visible while hovering) */}
+      <motion.span
+        aria-hidden
+        className="absolute left-1/2 bottom-0 h-2 w-1/2 -translate-x-1/2 rounded-full bg-gray-900/10 blur-[2px]"
+        animate={
+          hovering
+            ? {
+                opacity: [0.35, 0.55, 0.4, 0.5, 0.35],
+                scaleX: [1, 0.85, 1.1, 0.9, 1],
+                y: [0, 2, -1, 1, 0],
+                transition: {
+                  duration: durWake,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                },
+              }
+            : { opacity: 0, scaleX: 1, y: 0, transition: { duration: 0.2 } }
+        }
+      />
+    </motion.span>
+  );
+}
 
 export default function LiquidOverlayNav() {
   const [open, setOpen] = useState(false);
@@ -38,17 +137,13 @@ export default function LiquidOverlayNav() {
     { label: "CONTACT", href: "/contact" },
   ];
 
-  // Easing
   const easeOutExpo = cubicBezier(0.22, 1, 0.36, 1);
-
   const panelTransition: Transition = prefersReducedMotion
     ? { duration: 0 }
     : { duration: 0.45, ease: easeOutExpo };
-
   const fadeTransition: Transition = prefersReducedMotion
     ? { duration: 0 }
     : { duration: 0.25 };
-
   const itemTransition = (i: number): Transition =>
     prefersReducedMotion
       ? { duration: 0 }
@@ -57,16 +152,19 @@ export default function LiquidOverlayNav() {
   const onNavClick = useCallback(
     (href: string) => {
       setOpen(false);
-      setTimeout(() => {
-        window.location.href = href;
-      }, prefersReducedMotion ? 0 : 320);
+      setTimeout(
+        () => {
+          window.location.href = href;
+        },
+        prefersReducedMotion ? 0 : 320
+      );
     },
     [prefersReducedMotion]
   );
 
   return (
     <>
-      {/* Top bar — increased top gap via pt-3 and taller header */}
+      {/* Top bar */}
       <header className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between h-16 px-6 pt-3">
         <Link
           href="/"
@@ -109,7 +207,7 @@ export default function LiquidOverlayNav() {
               onClick={() => setOpen(false)}
             />
 
-            {/* Slide-in full screen panel FROM RIGHT */}
+            {/* Panel */}
             <motion.aside
               key="panel"
               initial={{ x: "100%" }}
@@ -120,7 +218,7 @@ export default function LiquidOverlayNav() {
               aria-modal="true"
               role="dialog"
             >
-              {/* Close button */}
+              {/* Close */}
               <div className="absolute top-4 right-4 z-[110]">
                 <button
                   onClick={() => setOpen(false)}
@@ -158,49 +256,17 @@ export default function LiquidOverlayNav() {
                       >
                         <button
                           onClick={() => onNavClick(l.href)}
-                          className="group w-full"
+                          className="w-full"
                         >
-                          {/* BOUNCE ON HOVER */}
-                          <motion.span
-                            className="inline-block px-6 py-3 text-[clamp(26px,5vw,56px)] text-gray-900"
-                            whileHover={{
-                              y: [0, -10, 0],
-                              scale: [1, 1.05, 1],
-                              transition: {
-                                duration: 0.38,
-                                ease: easeOutExpo,
-                                times: [0, 0.5, 1],
-                              },
-                            }}
-                            whileTap={{
-                              scale: 0.97,
-                              transition: { duration: 0.12 },
-                            }}
-                          >
-                            {l.label}
-                          </motion.span>
-
-                          {/* Underline accent */}
-                          <span className="block mx-auto h-[2px] w-0 group-hover:w-3/4 transition-all duration-300 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-900 rounded-full" />
+                          <HoverFloatWord strength={1.15 + i * 0.12}>
+                            <span className="inline-block px-6 py-3 text-[clamp(26px,5vw,56px)] text-gray-900">
+                              {l.label}
+                            </span>
+                          </HoverFloatWord>
                         </button>
                       </motion.li>
                     ))}
                   </ul>
-
-                  {/* Tagline chip */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={
-                      prefersReducedMotion
-                        ? { duration: 0 }
-                        : { delay: 0.25, duration: 0.4, ease: easeOutExpo }
-                    }
-                    className="mt-10 text-center"
-                  >
-                    
-                  </motion.div>
                 </nav>
               </div>
             </motion.aside>

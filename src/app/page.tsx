@@ -6,6 +6,7 @@ import ImageTrailHero from "./components/ImageTrailHero";
 import { Item5Canvas } from "./components/Item5";
 import { Suspense } from "react";
 import ProjectBriefForm from "./components/ProjectBriefForm";
+import AboutModern from "./components/AboutModern";
 
 export default function Page() {
   return (
@@ -30,107 +31,8 @@ export default function Page() {
         />
       </section>
 
-      {/* About Section - White Background */}
-      <section className="bg-white text-gray-900 py-24 lg:py-32 relative overflow-hidden">
-        {/* Modern background elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 -left-32 w-64 h-64 bg-gradient-to-r from-gray-900/5 to-gray-600/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-gradient-to-l from-gray-600/5 to-gray-900/5 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-px h-32 bg-gradient-to-b from-transparent via-gray-200 to-transparent"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 relative">
-          <div className="text-center max-w-6xl mx-auto">
-            <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200/50 rounded-full text-sm font-medium uppercase tracking-[0.2em] text-gray-600 mb-12 backdrop-blur-sm shadow-sm">
-              <div className="w-2 h-2 bg-gray-400 rounded-full mr-3 animate-pulse"></div>
-              About KHODITECH
-            </div>
-            <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black uppercase tracking-[-0.02em] mb-12 leading-[0.85]">
-              Who We <span className="text-gray-300 font-extralight">Are</span>
-            </h2>
-            <p className="text-xl sm:text-2xl leading-relaxed text-gray-600 mb-8 max-w-4xl mx-auto">
-              Based in{" "}
-              <span className="font-semibold text-gray-800">
-                Binbrook, Ontario, Canada
-              </span>
-              , KHODITECH provides professional IT support services with a
-              primary focus on web development solutions for individuals and
-              corporate clients.
-            </p>
-            <p className="text-lg sm:text-xl leading-relaxed text-gray-600 mb-12 max-w-4xl mx-auto">
-              Our mission is to deliver reliable, scalable, and innovative IT
-              services that empower clients to achieve their technology goals.
-              We transform innovative ideas into powerful digital solutions.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-12 lg:gap-20 mt-24">
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
-                <div className="relative text-center p-12 rounded-3xl bg-white border border-gray-100/50 backdrop-blur-sm hover:shadow-2xl hover:shadow-gray-900/10 transition-all duration-700 group-hover:-translate-y-2">
-                  <div className="relative mx-auto mb-10">
-                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-gray-900/25 group-hover:scale-110 transition-transform duration-500">
-                      <svg
-                        className="w-12 h-12 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-gray-900 rounded-full opacity-10 group-hover:scale-125 transition-transform duration-300"></div>
-                  </div>
-                  <h3 className="text-2xl font-black uppercase tracking-[0.1em] mb-8 text-gray-900">
-                    Web Development
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg font-light">
-                    Modern, responsive websites built with cutting-edge
-                    technologies and industry best practices for optimal
-                    performance and user engagement.
-                  </p>
-                </div>
-              </div>
-
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform duration-500"></div>
-                <div className="relative text-center p-12 rounded-3xl bg-white border border-gray-100/50 backdrop-blur-sm hover:shadow-2xl hover:shadow-gray-900/10 transition-all duration-700 group-hover:-translate-y-2">
-                  <div className="relative mx-auto mb-10">
-                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-gray-900/25 group-hover:scale-110 transition-transform duration-500">
-                      <svg
-                        className="w-12 h-12 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="absolute -top-2 -left-2 w-6 h-6 bg-gray-900 rounded-full opacity-10 group-hover:scale-125 transition-transform duration-300"></div>
-                  </div>
-                  <h3 className="text-2xl font-black uppercase tracking-[0.1em] mb-8 text-gray-900">
-                    Mobile Apps
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg font-light">
-                    Native and cross-platform mobile applications that deliver
-                    exceptional user experiences across all devices and
-                    platforms.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* About Section */}
+      <AboutModern />
       {/* Logos Section */}
       <TechMarquee />
 
