@@ -158,7 +158,7 @@ export default function ContactPage() {
                       Phone
                     </h3>
                     <p className="text-gray-600 leading-relaxed">
-                      +1 (555) 123-4567
+                      +1 (321) 314-9649
                       <br />
                       Available 9 AM - 6 PM EST
                     </p>
